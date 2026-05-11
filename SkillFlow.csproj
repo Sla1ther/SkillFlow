@@ -10,6 +10,7 @@
     <Folder Include="DTOs\" />
     <Folder Include="Data\" />
     <Folder Include="Middlewares\" />
+    <Folder Include="ViewModels\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
