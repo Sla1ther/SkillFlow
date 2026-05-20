@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Configs\" />
     <Folder Include="DTOs\" />
     <Folder Include="Middlewares\" />
     <Folder Include="Areas\" />
