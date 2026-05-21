@@ -13,7 +13,7 @@
         public bool IsCompleted { get; set; }
         public int ProgressPercent { get; set; }
         public DateTime? CompletedAt { get; set; }
-        //public User User { get; set; }
-        public SkillModel Skill { get; set; }
+        public User User { get; set; } = new User();
+        public SkillModel Skill { get; set; } = new SkillModel();
     }
 }

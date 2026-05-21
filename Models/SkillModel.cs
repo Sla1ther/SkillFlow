@@ -1,4 +1,6 @@
-﻿namespace SkillFlow.Models
+﻿using SkillFlow.Models.Enums;
+
+namespace SkillFlow.Models
 {
     /// <summary>
     /// SkillModel represents an individual skill
@@ -13,6 +15,8 @@
         public int Id { get; set; }
 
         public string Title { get; set; }
+
+        public SkillLevel Level { get; set; }
 
         public int DirectionId { get; set; }
 
