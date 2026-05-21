@@ -32,17 +32,10 @@ namespace SkillFlow.Data
         /// foreign keys and navigation properties. Call the base implementation before applying custom
         /// configurations.</remarks>
         /// <param name="modelBuilder">The builder used to construct the model for the context. Cannot be null.</param>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<SkillModel>()
-                .HasOne(s => s.Direction)
-                .WithMany(d => d.Skills)    
-                .HasForeignKey(s => s.DirectionId);
-            modelBuilder.Entity<UserSkillModel>()
-                .HasOne(us => us.Skill)
-                .WithMany()
-                .HasForeignKey(us => us.SkillId);
+            base.OnModelCreating(builder);
+            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
         #endregion
         #endregion

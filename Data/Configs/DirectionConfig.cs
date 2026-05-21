@@ -22,13 +22,6 @@ namespace SkillFlow.Data.Configs
 
             builder.HasKey(d => d.Id);
 
-            builder.Property(d => d.Name)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(d => d.Description)
-                .HasMaxLength(500);
-
             builder.HasMany(d => d.Skills)
                 .WithOne(s => s.Direction)
                 .HasForeignKey(s => s.DirectionId)

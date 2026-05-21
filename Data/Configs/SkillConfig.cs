@@ -22,10 +22,6 @@ namespace SkillFlow.Data.Configs
             builder.ToTable("Skills");
             builder.HasKey(s => s.Id);
 
-            builder.Property(s => s.Title)
-                   .IsRequired()
-                   .HasMaxLength(100);
-
 
             builder.HasOne(s => s.Direction)
                    .WithMany(d => d.Skills)

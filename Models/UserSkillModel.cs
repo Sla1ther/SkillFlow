@@ -8,12 +8,12 @@
     public class UserSkillModel
     {
         public int Id { get; set; }
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public int SkillId { get; set; }
         public bool IsCompleted { get; set; }
         public int ProgressPercent { get; set; }
         public DateTime? CompletedAt { get; set; }
-        //public User User { get; set; }
-        public SkillModel Skill { get; set; }
+        public User User { get; set; } = new User();
+        public SkillModel Skill { get; set; } = new SkillModel();
     }
 }
