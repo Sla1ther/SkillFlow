@@ -14,12 +14,12 @@ namespace SkillFlow.Models
     {
         public int Id { get; set; }
 
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         public SkillLevel Level { get; set; }
 
         public int DirectionId { get; set; }
 
-        public DirectionModel Direction { get; set; }
+        public DirectionModel Direction { get; set; } = new DirectionModel();
     }
 }

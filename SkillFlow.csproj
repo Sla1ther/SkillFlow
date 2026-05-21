@@ -10,7 +10,6 @@
     <Folder Include="Extensions\" />
     <Folder Include="Areas\" />
     <Folder Include="Middlewares\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
