@@ -1,0 +1,122 @@
+@model SkillCardViewModel
+@using SkillFlow.Models.Enums
+
+
+<div class="skill-card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">@Model.Title</h5>
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            <small class="text-muted">
+                <strong>Direction:</strong> @Model.DirectionName
+            </small>
+        </p>
+        <div class="mb-2">
+            <span class="badge badge-@GetLevelClass(Model.Level)">
+                @Model.Level
+            </span>
+        </div>
+        @if (Model.ProgressPercent > 0)
+        {
+            <div class="progress mb-2" style="height: 20px;">
+                <div class="progress-bar" role="progressbar" style="width: @Model.ProgressPercent%" 
+                     aria-valuenow="@Model.ProgressPercent" aria-valuemin="0" aria-valuemax="100">
+                    @Model.ProgressPercent%
+                </div>
+            </div>
+        }
+        @if (Model.IsCompleted)
+        {
+            <div class="alert alert-success py-1 px-2 mb-2" role="alert">
+                <i class="fas fa-check-circle"></i> Completed
+            </div>
+        }
+    </div>
+    <div class="card-footer bg-white">
+        <a href="@Url.Action("Details", "Skills", new { id = Model.Id })" class="btn btn-sm btn-primary">
+            View Details
+        </a>
+        <a href="@Url.Action("Edit", "Skills", new { id = Model.Id })" class="btn btn-sm btn-warning">
+            Edit
+        </a>
+        <a href="@Url.Action("Delete", "Skills", new { id = Model.Id })" class="btn btn-sm btn-danger">
+            Delete
+        </a>
+    </div>
+</div>
+
+@functions {
+    private string GetLevelClass(SkillLevel level)
+    {
+        return level switch
+        {
+            SkillLevel.Beginner => "success",
+            SkillLevel.Intermediate => "warning",
+            SkillLevel.Advanced => "danger",
+            _ => "secondary"
+        };
+    }
+}
+
+<style>
+    .skill-card {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .skill-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .skill-card .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        padding: 1rem;
+    }
+
+    .skill-card .card-body {
+        flex: 1;
+        padding: 1rem;
+    }
+
+    .skill-card .card-footer {
+        padding: 0.75rem;
+        border-top: 1px solid #dee2e6;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .skill-card .card-footer .btn {
+        flex: 1;
+        min-width: 70px;
+        font-size: 0.85rem;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .badge-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .badge-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .badge-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+</style>

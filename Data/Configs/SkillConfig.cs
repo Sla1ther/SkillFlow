@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkillFlow.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace SkillFlow.Data.Configs
 {
@@ -17,7 +18,7 @@ namespace SkillFlow.Data.Configs
         /// <remarks>Call this method within the OnModelCreating method to define table mapping, keys,
         /// property constraints, and relationships for the SkillModel entity.</remarks>
         /// <param name="builder">The builder used to configure the SkillModel entity type.</param>
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<SkillModel> builder)
+        public void Configure(EntityTypeBuilder<SkillModel> builder)
         {
             builder.ToTable("Skills");
             builder.HasKey(s => s.Id);
@@ -25,7 +26,13 @@ namespace SkillFlow.Data.Configs
 
             builder.HasOne(s => s.Direction)
                    .WithMany(d => d.Skills)
-                   .HasForeignKey(s => s.DirectionId);
+                   .HasForeignKey(s => s.DirectionId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            
+
+            builder.Property(s => s.Level)
+                   .HasColumnName("Level");
         }
     }
 }

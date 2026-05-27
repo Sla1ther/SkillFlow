@@ -1,0 +1,121 @@
+@using SkillFlow.Models.Enums
+@model EditSkillViewModel
+@{
+    ViewData["Title"] = "Edit Skill";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+        <a href="@Url.Action("Details", "Skills", new { id = Model.Id })" class="btn btn-outline-secondary mb-4">
+            <i class="fas fa-arrow-left me-1"></i> Back to Skill
+        </a>
+
+        <div class="card">
+            <div class="card-header bg-warning bg-gradient">
+                <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Skill</h4>
+            </div>
+            <div class="card-body p-4">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-1"></i>
+                        <strong>Please fix the following errors:</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <ul class="mb-0 mt-2">
+                            @foreach (var modelState in ViewData.ModelState.Values)
+                            {
+                                @foreach (var error in modelState.Errors)
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <form method="post" action="@Url.Action("Edit", "Skills", new { id = Model.Id })" novalidate>
+                    <input type="hidden" name="Id" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label for="Title" class="form-label fw-semibold">
+                            Skill Title <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               class="form-control @(ViewData.ModelState.ContainsKey("Title") ? "is-invalid" : "")"
+                               id="Title" name="Title"
+                               placeholder="Enter skill title"
+                               value="@Model?.Title" required>
+                        <div class="form-text">Between 3 and 100 characters</div>
+                        @if (ViewData.ModelState.ContainsKey("Title"))
+                        {
+                            <div class="invalid-feedback">
+                                @string.Join(" ", ViewData.ModelState["Title"].Errors.Select(e => e.ErrorMessage))
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Level" class="form-label fw-semibold">
+                            Skill Level <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select @(ViewData.ModelState.ContainsKey("Level") ? "is-invalid" : "")"
+                                id="Level" name="Level" required>
+                            <option value="">-- Select a Level --</option>
+                            @if (ViewBag.AvailableLevels != null)
+                            {
+                                @foreach (SkillLevel level in ViewBag.AvailableLevels)
+                                {
+                                    <option value="@((int)level)"
+                                            selected="@(Model?.Level == level ? "selected" : null)">
+                                        @level
+                                    </option>
+                                }
+                            }
+                        </select>
+                        @if (ViewData.ModelState.ContainsKey("Level"))
+                        {
+                            <div class="invalid-feedback">
+                                @string.Join(" ", ViewData.ModelState["Level"].Errors.Select(e => e.ErrorMessage))
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="DirectionId" class="form-label fw-semibold">
+                            Direction <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select @(ViewData.ModelState.ContainsKey("DirectionId") ? "is-invalid" : "")"
+                                id="DirectionId" name="DirectionId" required>
+                            <option value="">-- Select a Direction --</option>
+                            @if (ViewBag.Directions != null)
+                            {
+                                @foreach (var direction in ViewBag.Directions)
+                                {
+                                    <option value="@direction.Id"
+                                            selected="@(Model?.DirectionId == direction.Id ? "selected" : null)">
+                                        @direction.Name
+                                    </option>
+                                }
+                            }
+                        </select>
+                        @if (ViewData.ModelState.ContainsKey("DirectionId"))
+                        {
+                            <div class="invalid-feedback">
+                                @string.Join(" ", ViewData.ModelState["DirectionId"].Errors.Select(e => e.ErrorMessage))
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save me-1"></i> Update Skill
+                        </button>
+                        <a href="@Url.Action("Details", "Skills", new { id = Model.Id })" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

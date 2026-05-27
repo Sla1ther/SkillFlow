@@ -1,0 +1,221 @@
+@using SkillFlow.ViewModels.Progress
+@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Learning Dashboard";
+}
+
+<div class="container-fluid py-5">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="display-4 mb-3">Your Learning Dashboard</h1>
+            <p class="text-muted">Track your progress across all skills and celebrate your achievements</p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title text-muted mb-3">Overall Progress</h6>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h2 class="mb-2">@Model.Statistics.OverallProgressPercent%</h2>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: @Model.Statistics.OverallProgressPercent%;" 
+                                     aria-valuenow="@Model.Statistics.OverallProgressPercent" 
+                                     aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title text-muted mb-3">Completed Skills</h6>
+                    <div class="d-flex align-items-center">
+                        <h2 class="mb-0">@Model.Statistics.CompletedSkillsCount</h2>
+                        <span class="ms-2 text-muted">/ @Model.Statistics.TotalSkillsCount</span>
+                    </div>
+                    <small class="text-success">@Model.Statistics.CompletionRate% Complete</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title text-muted mb-3">In Progress</h6>
+                    <div class="d-flex align-items-center">
+                        <h2 class="mb-0">@Model.Statistics.SkillsInProgressCount</h2>
+                        <span class="ms-2 text-muted">skills</span>
+                    </div>
+                    <small class="text-info">Keep going strong!</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title text-muted mb-3">Completion Rate</h6>
+                    <div class="d-flex align-items-center">
+                        <h2 class="mb-2">@Model.Statistics.CompletionRate%</h2>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-info" role="progressbar" 
+                             style="width: @Model.Statistics.CompletionRate%;" 
+                             aria-valuenow="@Model.Statistics.CompletionRate" 
+                             aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.CompletedSkills.Any())
+    {
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-4">Recently Completed</h3>
+                <div class="row">
+                    @foreach (var skill in Model.CompletedSkills.Take(3))
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-0 shadow-sm border-start border-success border-3">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start justify-content-between mb-2">
+                                        <div>
+                                            <h5 class="card-title mb-1">@skill.SkillTitle</h5>
+                                            <small class="text-muted d-block">@skill.DirectionName</small>
+                                        </div>
+                                        <span class="badge bg-success">✓ Done</span>
+                                    </div>
+                                    @if (skill.CompletedAt.HasValue)
+                                    {
+                                        <small class="text-muted">
+                                            Completed: @skill.CompletedAt.Value.ToString("MMM dd, yyyy")
+                                        </small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if (Model.CompletedSkills.Count > 3)
+                {
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <a asp-action="CompletedSkills" class="btn btn-outline-primary">
+                                View All Completed Skills (@Model.CompletedSkills.Count)
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-4">Your Skills</h3>
+            @if (Model.UserSkills.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Skill</th>
+                                <th>Direction</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var skill in Model.UserSkills.OrderByDescending(s => s.IsCompleted).ThenByDescending(s => s.ProgressPercent))
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@skill.SkillTitle</strong>
+                                        <br />
+                                        <small class="text-muted">@skill.Level</small>
+                                    </td>
+                                    <td>@skill.DirectionName</td>
+                                    <td>
+                                        <div class="progress" style="min-width: 150px; height: 24px;">
+                                            <div class="progress-bar @(skill.IsCompleted ? "bg-success" : skill.ProgressPercent > 50 ? "bg-info" : "bg-warning")" 
+                                                 role="progressbar" 
+                                                 style="width: @skill.ProgressPercent%;" 
+                                                 aria-valuenow="@skill.ProgressPercent" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                                <span class="d-inline-block w-100 text-center" style="font-size: 0.8rem;">
+                                                    @skill.ProgressPercent%
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (skill.IsCompleted)
+                                        {
+                                            <span class="badge bg-success">Completed</span>
+                                        }
+                                        else if (skill.ProgressPercent > 0)
+                                        {
+                                            <span class="badge bg-info">In Progress</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Not Started</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            @if (!skill.IsCompleted)
+                                            {
+                                                <form asp-action="CompleteSkill" method="post" style="display: inline;">
+                                                    <input type="hidden" name="skillId" value="@skill.SkillId" />
+                                                    <button type="submit" class="btn btn-success btn-sm" 
+                                                            title="Mark as completed" 
+                                                            onclick="return confirm('Mark this skill as completed?');">
+                                                        ✓
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    <strong>No skills assigned yet.</strong> Start by adding skills to track your progress!
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<script>
+    setInterval(function() {
+        fetch('@Url.Action("GetProgressStats", "Progress")')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Progress updated:', data);
+            })
+            .catch(error => console.log('Error fetching progress:', error));
+    }, 30000);
+</script>
+
