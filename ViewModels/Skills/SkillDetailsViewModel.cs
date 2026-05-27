@@ -1,4 +1,5 @@
-﻿using SkillFlow.Models.Enums;
+﻿using SkillFlow.Models;
+using SkillFlow.Models.Enums;
 
 namespace SkillFlow.ViewModels.Skills
 {
@@ -22,5 +23,7 @@ namespace SkillFlow.ViewModels.Skills
         public int ProgressPercent { get; set; }
 
         public bool IsCompleted { get; set; }
+
+
     }
 }

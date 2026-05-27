@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkillFlow.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace SkillFlow.Data.Configs
 {
@@ -17,7 +18,7 @@ namespace SkillFlow.Data.Configs
         /// <remarks>This method sets up the table name, primary key, and foreign key relationships for
         /// the UserSkillModel entity when using Entity Framework Core's model builder.</remarks>
         /// <param name="builder">The builder used to configure the UserSkillModel entity type.</param>
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<UserSkillModel> builder)
+        public void Configure(EntityTypeBuilder<UserSkillModel> builder)
         {
             builder.ToTable("UserSkills");
             builder.HasKey(us => us.Id);

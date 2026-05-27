@@ -1,4 +1,6 @@
-﻿using SkillFlow.Models.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using SkillFlow.Models.Enums;
 
 namespace SkillFlow.Models
 {
@@ -14,10 +16,16 @@ namespace SkillFlow.Models
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "Skill title is required")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "Skill title must be between 3 and 100 characters")]
         public string Title { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Skill level is required")]
         public SkillLevel Level { get; set; }
 
+        [Required(ErrorMessage = "Direction is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid direction")]
+        [ForeignKey("Direction")]
         public int DirectionId { get; set; }
 
         public DirectionModel Direction { get; set; } = new DirectionModel();

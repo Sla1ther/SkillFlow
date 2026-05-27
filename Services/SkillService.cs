@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkillFlow.Data;
 using SkillFlow.Models;
+using SkillFlow.Models.Enums;
 using SkillFlow.Services.Interfaces;
+using SkillFlow.ViewModels.Skills;
 
 namespace SkillFlow.Services
 {
@@ -109,6 +111,28 @@ namespace SkillFlow.Services
                     _db.SaveChanges();
                 }
             }
+        }
+
+        /// <summary>
+        /// Retrieves skills filtered by the specified criteria.
+        /// </summary>
+        /// <param name="filter">The filter criteria including direction ID and skill level.</param>
+        /// <returns>An enumerable collection of SkillModel instances matching the filter criteria.</returns>
+        public IEnumerable<SkillModel> GetFilteredSkills(SkillsFilterViewModel filter)
+        {
+            var query = _db.Skills.Include(s => s.Direction).AsQueryable();
+
+            if (filter.DirectionId.HasValue)
+            {
+                query = query.Where(s => s.DirectionId == filter.DirectionId.Value);
+            }
+
+            if (filter.Level.HasValue)
+            {
+                query = query.Where(s => s.Level == filter.Level.Value);
+            }
+
+            return query.AsEnumerable();
         }
     }
 }
