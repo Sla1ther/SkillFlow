@@ -14,6 +14,7 @@ namespace SkillFlow.Data
         #region DbSets
         public DbSet<DirectionModel> Directions { get; set; }
         public DbSet<SkillModel> Skills { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<UserSkillModel> UserSkills { get; set; }
         #endregion
         /// <summary>
@@ -35,6 +36,7 @@ namespace SkillFlow.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<User>().ToTable("User");
             builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
         #endregion

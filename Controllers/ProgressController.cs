@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SkillFlow.Models;
+using System.Security.Claims;
 using SkillFlow.Services.Interfaces;
 using SkillFlow.ViewModels.Progress;
 
@@ -16,18 +15,15 @@ namespace SkillFlow.Controllers
     {
         #region Fields
         private readonly IProgressService _progressService;
-        private readonly UserManager<User> _userManager;
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the ProgressController class.
         /// </summary>
         /// <param name="progressService">The service for progress tracking operations.</param>
-        /// <param name="userManager">The user manager for identity operations.</param>
-        public ProgressController(IProgressService progressService, UserManager<User> userManager)
+        public ProgressController(IProgressService progressService)
         {
             _progressService = progressService ?? throw new ArgumentNullException(nameof(progressService));
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         #region Actions
@@ -39,18 +35,18 @@ namespace SkillFlow.Controllers
         [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Redirect("~/Identity/Account/Login");
+            var userId = GetCurrentUserId();
+            if (userId == null)
+                return RedirectToAction("Login", "Account");
 
             var statistics = new ProgressStatisticsViewModel
             {
-                OverallProgressPercent = await _progressService.CalculateOverallProgressAsync(user.Id),
-                CompletedSkillsCount = await _progressService.GetCompletedSkillsCountAsync(user.Id),
-                TotalSkillsCount = await _progressService.GetTotalSkillsCountAsync(user.Id)
+                OverallProgressPercent = await _progressService.CalculateOverallProgressAsync(userId),
+                CompletedSkillsCount = await _progressService.GetCompletedSkillsCountAsync(userId),
+                TotalSkillsCount = await _progressService.GetTotalSkillsCountAsync(userId)
             };
 
-            var userSkills = await _progressService.GetUserSkillsProgressAsync(user.Id);
+            var userSkills = await _progressService.GetUserSkillsProgressAsync(userId);
             var userSkillViewModels = userSkills.Select(us => new UserSkillProgressViewModel
             {
                 Id = us.Id,
@@ -82,11 +78,11 @@ namespace SkillFlow.Controllers
         [HttpGet]
         public async Task<IActionResult> CompletedSkills()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Redirect("~/Identity/Account/Login");
+            var userId = GetCurrentUserId();
+            if (userId == null)
+                return RedirectToAction("Login", "Account");
 
-            var completedSkills = await _progressService.GetCompletedSkillsAsync(user.Id);
+            var completedSkills = await _progressService.GetCompletedSkillsAsync(userId);
             var viewModels = completedSkills.Select(us => new UserSkillProgressViewModel
             {
                 Id = us.Id,
@@ -112,14 +108,14 @@ namespace SkillFlow.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProgress(int skillId, int progressPercent)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Redirect("~/Identity/Account/Login");
+            var userId = GetCurrentUserId();
+            if (userId == null)
+                return RedirectToAction("Login", "Account");
 
             if (progressPercent < 0 || progressPercent > 100)
                 return BadRequest("Progress percentage must be between 0 and 100");
 
-            var success = await _progressService.UpdateProgressAsync(user.Id, skillId, progressPercent);
+            var success = await _progressService.UpdateProgressAsync(userId, skillId, progressPercent);
 
             if (success)
                 return RedirectToAction(nameof(Dashboard));
@@ -136,11 +132,11 @@ namespace SkillFlow.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CompleteSkill(int skillId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Redirect("~/Identity/Account/Login");
+            var userId = GetCurrentUserId();
+            if (userId == null)
+                return RedirectToAction("Login", "Account");
 
-            var success = await _progressService.CompleteSkillAsync(user.Id, skillId);
+            var success = await _progressService.CompleteSkillAsync(userId, skillId);
 
             if (success)
                 return RedirectToAction(nameof(Dashboard));
@@ -155,20 +151,25 @@ namespace SkillFlow.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProgressStats()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var userId = GetCurrentUserId();
+            if (userId == null)
                 return Unauthorized();
 
             var stats = new ProgressStatisticsViewModel
             {
-                OverallProgressPercent = await _progressService.CalculateOverallProgressAsync(user.Id),
-                CompletedSkillsCount = await _progressService.GetCompletedSkillsCountAsync(user.Id),
-                TotalSkillsCount = await _progressService.GetTotalSkillsCountAsync(user.Id)
+                OverallProgressPercent = await _progressService.CalculateOverallProgressAsync(userId),
+                CompletedSkillsCount = await _progressService.GetCompletedSkillsCountAsync(userId),
+                TotalSkillsCount = await _progressService.GetTotalSkillsCountAsync(userId)
             };
 
             return Json(stats);
         }
 
         #endregion
+
+        private string? GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
     }
 }

@@ -1,0 +1,47 @@
+@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+
+<div class="auth-page">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-gradient">
+                    <h1 class="h4 mb-0">Create account</h1>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Register" asp-route-returnUrl="@returnUrl" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" autocomplete="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Login" asp-route-returnUrl="@returnUrl">Already have an account?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

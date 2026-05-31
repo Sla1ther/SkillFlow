@@ -26,6 +26,10 @@ namespace SkillFlow.Data.Configs
             builder.HasOne(us => us.Skill)
                    .WithMany()
                    .HasForeignKey(us => us.SkillId);
+
+            builder.HasOne(us => us.User)
+                   .WithMany(u => u.UserSkills)
+                   .HasForeignKey(us => us.UserId);
         }
     }
 }
